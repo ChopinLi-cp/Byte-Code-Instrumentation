@@ -29,7 +29,6 @@ public class ClassTracer extends ClassVisitor {
                 		super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
                		        super.visitLdcInsn("It is a Simple Addition By Instrumentation");
                 		super.visitMethodInsn(Opcodes.INVOKEVIRTUAL,  "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
-                		super.visitInsn(Opcodes.RETURN);
                 		super.visitMaxs(0, 0);
       			}
       			super.visitInsn(opcode);
