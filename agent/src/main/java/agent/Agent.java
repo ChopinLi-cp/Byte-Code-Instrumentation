@@ -15,13 +15,12 @@ public class Agent {
             @Override
             public byte[] transform(ClassLoader classLoader, String s, Class<?> aClass, ProtectionDomain protectionDomain, byte[] bytes) throws IllegalClassFormatException {
 
-                if ("other/Calculator".equals(s))
+               if ("other/Calculator".equals(s))
 	       	{
-                    // ASM Code
-                    ClassReader reader = new ClassReader(bytes);
-                    ClassWriter writer = new ClassWriter(reader, 0);
+                    final ClassReader reader = new ClassReader(bytes);
+                    final ClassWriter writer = new ClassWriter(reader,  ClassWriter.COMPUTE_FRAMES|ClassWriter.COMPUTE_MAXS);
                     ClassTracer visitor = new ClassTracer(writer);
-                    reader.accept(visitor, 0);
+                    reader.accept(visitor, ClassReader.EXPAND_FRAMES);
                     return writer.toByteArray();
                 }
 

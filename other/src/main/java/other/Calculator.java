@@ -8,15 +8,19 @@ public class Calculator {
     	this.secondDigit= secondDigit;
     }
     
-    public int  add() {
+    public void  add() {
 	sum = firstDigit+secondDigit;
 	System.out.println("SUM = " +sum);
-	return sum;
     } 
-   public int  multiply() {
+    public int  multiply() {
 	mul = firstDigit*secondDigit;
 	System.out.println("Multiply = " +mul);
 	return mul;
     }
+
+   public void view1(){
+   	String name="SHANTO";
+	System.out.println("Hi VIEW1" );
+   }
     
 }
