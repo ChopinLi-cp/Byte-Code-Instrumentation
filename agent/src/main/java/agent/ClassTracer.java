@@ -24,11 +24,14 @@ public class ClassTracer extends ClassVisitor {
 		  @Override
 	    	public void visitInsn(int opcode) {
     			if(opcode==Opcodes.RETURN && methodId.equals("other/Calculator.add")) {
+				super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility",
+                                "callPrint", "()V", false);
 //        			System.out.println("visitInsn*****");
 
-                		super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-               		        super.visitLdcInsn("It is a Simple Addition By Instrumentation");
-                		super.visitMethodInsn(Opcodes.INVOKEVIRTUAL,  "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+  //              		super.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+    //         		        super.visitLdcInsn("It is a Simple Addition By Instrumentation");
+   //             		super.visitMethodInsn(Opcodes.INVOKEVIRTUAL,  "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
+       //         		super.visitInsn(Opcodes.RETURN);
                 		super.visitMaxs(0, 0);
       			}
       			super.visitInsn(opcode);
