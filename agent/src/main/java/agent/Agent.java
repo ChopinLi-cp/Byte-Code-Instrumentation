@@ -18,9 +18,9 @@ public class Agent {
                if ("other/Calculator".equals(s))
 	       	{
                     final ClassReader reader = new ClassReader(bytes);
-                    final ClassWriter writer = new ClassWriter(reader,  ClassWriter.COMPUTE_FRAMES|ClassWriter.COMPUTE_MAXS);
+                    final ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES|ClassWriter.COMPUTE_MAXS );
                     ClassTracer visitor = new ClassTracer(writer);
-                    reader.accept(visitor, ClassReader.EXPAND_FRAMES);
+                    reader.accept(visitor, 0);
                     return writer.toByteArray();
                 }
 
