@@ -17,35 +17,6 @@ public class Utility{
 		m.add(obj);
 		int size = m.size();
 		System.out.println("SIZE = "+size);
-
-/*if (obj == null) {
-//            return null;
-System.out.println("null");
-        }
-else if (obj instanceof Iterable) {
-//            return (Iterable<?>) obj;
-
-System.out.println("Iterable");
-        }
-else if (obj.getClass().isArray()) {
-
-System.out.println("Array");
-}
-else if (obj instanceof Collection<?>){
-
-System.out.println("Collection");
-}
-
-else if (obj instanceof Map<?,?>){
-
-System.out.println("Coll");
-}
-*/
-/*int x= (int) obj;
-System.out.println("OBJ = " +x);
-System.out.println("OBJECT[0] = " +obj.getClass().getName());*/
-//System.out.println("OBJECT[0] = " +obj.length);
-
-return "";
-}
+		return "";
+	}
 }
