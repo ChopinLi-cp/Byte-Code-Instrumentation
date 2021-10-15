@@ -26,12 +26,12 @@ public class Utility{
 		m.add(obj);
 		EnumSet[] op_names= EnumSet.values();
 		int op_id=0;		
-		for (EnumSet op_name : op_names) {
-			if(op_name.getValue()==1)	
+		for (EnumSet enum_op_name : op_names) {
+			String op_name=enum_op_name.name();
+			if(op_name.equals("ADD"))	
 			{
-        	    		//System.out.println(op_name + "ADD HAppened " + op_name.getValue());
-				op_id=op_name.getValue();
-								
+				System.out.println("NAME*****************" + op_name);
+				op_id=enum_op_name.getValue();
 			}
         	}
 	        if(op_id>0){
@@ -51,15 +51,19 @@ public class Utility{
 		System.out.println("Contains CurrentThreadId = "+currentThreadId);
 		m.add(obj);
 		EnumSet[] op_names= EnumSet.values();
-                int op_id=0;   
-                for (EnumSet op_name : op_names) {
-                        if(op_name.getValue()==2){
-                                op_id=op_name.getValue();
+                int op_id=0;  
+		for (EnumSet enum_op_name : op_names) {
+                        String op_name=enum_op_name.name();
+                        if(op_name.equals("CONTAINS"))       
+                        {
+				
+                        	System.out.println("NAME*****************" + op_name);
+                                op_id=enum_op_name.getValue();
                         }
                 }
+ 
                 if(op_id>0){    
                         
-        //                System.out.println(op_id + " Contains HAPPENDED  ");
 			OnCall(currentThreadId, hashcode, op_id);
                 }
                 return "";
@@ -80,7 +84,7 @@ public class Utility{
 		if(globalMap==null) {
 			globalMap = new HashMap<Long, HashMap<Integer, Integer>>();
 			objOpIdPair = new HashMap<Integer,Integer>();			
-			System.out.println ("Value Added in EMPTY HASHMAP ");
+			System.out.println ("Value Added in EMPTY HASHMAP "+ thread_id + " " + obj_id + " " + op_id);
 			objOpIdPair.put(obj_id, op_id);
                         globalMap.put(thread_id, objOpIdPair);
        //                 printHashMap();
