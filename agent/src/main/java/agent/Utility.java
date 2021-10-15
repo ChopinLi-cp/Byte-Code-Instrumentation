@@ -16,14 +16,14 @@ public class Utility{
 
 	}
 
-	public static String addProxy(List m, Object obj){
-		int hashcode = System.identityHashCode(m);
+	public static String addProxy(List list, Object obj){
+		int hashcode = System.identityHashCode(list);
 
 		Thread currentThread = Thread.currentThread();
 		long currentThreadId = currentThread.getId();
 		
 		System.out.println("ADD CurrentThreadId = "+currentThreadId);
-		m.add(obj);
+		//m.add(obj);
 		EnumSet[] op_names= EnumSet.values();
 		int op_id=0;		
 		for (EnumSet enum_op_name : op_names) {
@@ -38,18 +38,19 @@ public class Utility{
        // 	    	System.out.println(op_id + "ADD HAppened ");
 			OnCall(currentThreadId, hashcode, op_id);
 		}
+		list.add(obj);
+
 		return "";
 	}
 
-	public static String containsProxy(List m, Object obj){
-		int hashcode = System.identityHashCode(m);
+	public static String containsProxy(List list, Object obj){
+		int hashcode = System.identityHashCode(list);
 		//System.out.println("hashCode = "+hashcode);
 
 		Thread currentThread = Thread.currentThread();
 		long currentThreadId = currentThread.getId();
 		
 		System.out.println("Contains CurrentThreadId = "+currentThreadId);
-		m.add(obj);
 		EnumSet[] op_names= EnumSet.values();
                 int op_id=0;  
 		for (EnumSet enum_op_name : op_names) {
@@ -66,6 +67,8 @@ public class Utility{
                         
 			OnCall(currentThreadId, hashcode, op_id);
                 }
+		list.add(obj);	
+		
                 return "";
 	}
 
