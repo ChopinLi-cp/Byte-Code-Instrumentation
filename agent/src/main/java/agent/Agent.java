@@ -15,7 +15,7 @@ public class Agent {
             @Override
             public byte[] transform(ClassLoader classLoader, String s, Class<?> aClass, ProtectionDomain protectionDomain, byte[] bytes) throws IllegalClassFormatException {
 
-               if ("other/Calculator".equals(s))
+               if ("other/DataRace".equals(s))
 	       	{
                     final ClassReader reader = new ClassReader(bytes);
                     final ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_FRAMES|ClassWriter.COMPUTE_MAXS );
