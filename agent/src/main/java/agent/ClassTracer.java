@@ -11,6 +11,7 @@ import org.objectweb.asm.Label;
 
 public class ClassTracer extends ClassVisitor {
     private String cn;
+    int lineNumber;
     public ClassTracer(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
 
@@ -38,27 +39,33 @@ public class ClassTracer extends ClassVisitor {
 		   	}
 		}
     @Override
+    public void visitLineNumber(int line, Label start) {
+        lineNumber = line;
+ 	 super.visitLineNumber(line, start);
+    } 
+    
+    @Override
     public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {	
 		//System.out.println("Owner = " +name);
-		if(opcode == Opcodes.INVOKEINTERFACE && owner.equals("java/util/List") && desc.equals("(Ljava/lang/Object;)Z")){
-			if(name.equals("add")){
-				super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", "addProxy", "(Ljava/util/List;Ljava/lang/Object;)Ljava/lang/String;", false);
-			}
-			else if(name.equals("contains")){
-				//System.out.println("Contains = " +opcode);
-				super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", "containsProxy", "(Ljava/util/List;Ljava/lang/Object;)Ljava/lang/String;", false);
-			}
+		String combined_name = owner +"/" +name+desc;	
+
+//		System.out.println("Combined Name = " +combined_name);
+		if(combined_name.equals("java/util/ArrayList/add(Ljava/lang/Object;)Z")){
+			
+			super.visitLdcInsn(lineNumber);
+			super.visitLdcInsn(cn);
+			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", "addProxy", "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;)Z", false);
 		}
+		else if(combined_name.equals("java/util/List/contains(Ljava/lang/Object;)Z")){
+			//System.out.println("Contains = " +opcode);
+			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", "containsProxy", "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;)Z", false);
+			}
 
 		else {
 			super.visitMethodInsn(opcode, owner, name, desc, itf);
 		}
-  }
+  	}
 	};
   }
 
-    @Override
-    public void visitEnd() {
-        super.visitEnd();
-    }
 }

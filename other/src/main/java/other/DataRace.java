@@ -5,8 +5,8 @@ import java.util.Collections;
 
 
 public  class DataRace{
-	private	static 	List list=new ArrayList();  
-	static List<String> countries = new ArrayList<String>();
+	private	static 	ArrayList list=new ArrayList();  
+//	static List<String> countries = new ArrayList<String>();
 	static void test(){
 		
 //	 	countries.add("ABC 122");
