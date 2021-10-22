@@ -49,14 +49,17 @@ public class ClassTracer extends ClassVisitor {
 		//System.out.println("Owner = " +name);
 		String combined_name = owner +"/" +name+desc;	
 
-//		System.out.println("Combined Name = " +combined_name);
+		//System.out.println("Combined Name = " +combined_name);
 		if(combined_name.equals("java/util/ArrayList/add(Ljava/lang/Object;)Z")){
 			
 			super.visitLdcInsn(lineNumber);
 			super.visitLdcInsn(cn);
 			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", "addProxy", "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;)Z", false);
 		}
-		else if(combined_name.equals("java/util/List/contains(Ljava/lang/Object;)Z")){
+		else if(combined_name.equals("java/util/ArrayList/contains(Ljava/lang/Object;)Z")){
+		//	System.out.println("ELSE =====>");
+			super.visitLdcInsn(lineNumber);
+                        super.visitLdcInsn(cn);
 			//System.out.println("Contains = " +opcode);
 			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", "containsProxy", "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;)Z", false);
 			}

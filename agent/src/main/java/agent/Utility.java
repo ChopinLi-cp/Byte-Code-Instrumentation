@@ -7,7 +7,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 public class Utility{
-	private static HashMap<Integer, ThreadAndOp> globalMap;
+	private static Map<Integer, ThreadAndOp> globalMap;
+	static int count=0;
 	//private static HashMap<Long,Integer> threadOpIdPair;// = new HashMap<Integer,Integer>();
 	static ThreadAndOp threadOpIdPair;
 	public static String callPrint(){
@@ -30,7 +31,7 @@ public class Utility{
 			
 	//	EnumSet[] op_names= EnumSet.values();
 	//	int op_id=0;		
-		/*for (EnumSet enum_op_name : op_names) {
+		/*for (EnggggmSet enum_op_name : op_names) {
 			String op_name=enum_op_name.name();
 			if(op_name.equals("ADD"))	
 			{
@@ -54,24 +55,11 @@ public class Utility{
 		Thread currentThread = Thread.currentThread();
 		long currentThreadId = currentThread.getId();
 		
-		System.out.println("Contains CurrentThreadId = "+currentThreadId);
-/*		EnumSet[] op_names= EnumSet.values();
-                int op_id=0;  
-		for (EnumSet enum_op_name : op_names) {
-                        String op_name=enum_op_name.name();
-                        if(op_name.equals("CONTAINS"))       
-                        {
-				
-                        	System.out.println("NAME*****************" + op_name);
-                                op_id=enum_op_name.getValue();
-                        }
-                }
- 
-                if(op_id>0){    */
+		//System.out.println("Contains************** CurrehtThreadId = "+currentThreadId);
                 Op opContains = new Op();
 		opContains.setOpID(2);	
 		
-		System.out.println("ONCALL********");
+		//System.out.println("ONCALL********");
 		OnCall( hashcode, currentThreadId, opContains);
                 //}
 		boolean ret= list.contains(obj);	
@@ -79,55 +67,58 @@ public class Utility{
                 return ret;
 	}
 
+	public static void delay(){
+		try{
+		Thread.sleep(100);
+		}
+		catch (InterruptedException e) {
+                        System.out.println("Exception " );
+                        e.printStackTrace();
+                }
+
+	}
+
+	public static void set_trap(int obj_id, long thread_id, Op operation){
+		int op_id= operation.getOpID();
+		if(globalMap.isEmpty()){
+			threadOpIdPair = new ThreadAndOp(thread_id, op_id);
+                        globalMap.put(obj_id, threadOpIdPair);
+			System.out.println("*** Addition done for empty Map ****");
+		}
+		else {
+                         //System.out.println("======> Global Table will be updated " );
+                         threadOpIdPair = new ThreadAndOp(thread_id, op_id);
+                         globalMap.put(obj_id, threadOpIdPair);
+			 
+                         System.out.println("======> Global Table Update is done " );
+                }
+	}
 	
 
-	public static void OnCall(int obj_id, long thread_id, Op operation){
-		System.out.println("ONCALL********");
-		check_for_trap (obj_id , thread_id, operation );
-/*		if(should_delay(op_id)){
-			set_trap(thread_id, obj_id, op_id);
+	public static synchronized void OnCall(int obj_id, long thread_id, Op operation){
+		boolean violation = check_for_trap (obj_id , thread_id, operation );
+		if(should_delay(operation)){
+			set_trap(obj_id, thread_id, operation);
 			delay();
-			clear_trap(thread_id, obj_id, op_id);
-		}*/
+		//	clear_trap(thread_id, obj_id, op_id);
+		}
 	}
 
 	public static void getMapInstance(){
-		if(globalMap==null) {
+		if(globalMap==null) 
+		{
+			System.out.println("NEW INSTANCE................");
                         globalMap = new HashMap<>();
-			System.out.println("INITIALIZATION");
-                        //threadOpIdPair = new HashMap<Long,Integer>();
-                        //System.out.println ("Value Added in EMPTY HASHMAP "+ obj_id + " "+ thread_id + " " );
-		//	return 	globalMap;
 		}
-		//else
-		//	return globalMap;
 	}
-	public static void check_for_trap(int obj_id, long thread_id, Op operation){
+	public static boolean check_for_trap(int obj_id, long thread_id, Op operation){
 		
 		int op_id= operation.getOpID();
-		//ThreadAndOp threadOpIdPair;
-		
-		getMapInstance();
-		boolean x= globalMap.containsValue(obj_id);
-		System.out.println ("Bool " +x);
-		if(!globalMap.containsValue(obj_id)) 
-		{
-			threadOpIdPair = new ThreadAndOp(thread_id, op_id);
-			//threadOpIdPair.put(thread_id, op_id);
-                        globalMap.put(obj_id, threadOpIdPair);
-			
-			System.out.println("*** FROM CHECK TRAP ****" +" obj_id= " + obj_id + " thread id = "+thread_id + " op_id"+ op_id);
+		boolean violation=false;
+		getMapInstance();	
+		if(globalMap.isEmpty())	{
+			System.out.println("*** Global Map is Empty ****" );
 		}
-//		op_id= operation.getOpID();
-		//if(globalMap==null) {
-			//globalMap = new HashMap<Integer, HashMap<Long, Integer>>();
-			//threadOpIdPair = new HashMap<Long,Integer>();			
-			//System.out.println ("Value Added in EMPTY HASHMAP "+ obj_id + " "+ thread_id + " " );
-//			threadOpIdPair.put(thread_id, op_id);
- //                       globalMap.put(obj_id, threadOpIdPair);
-       //                 printHashMap();
-
-		//}
 		else {				         
 			long threadId;
                 	int objId, opId;
@@ -135,39 +126,20 @@ public class Utility{
                         	objId = globalMapEntry.getKey();
 				threadId= threadOpIdPair.getThreadId();
 				opId= threadOpIdPair.getOpId();
-System.out.println("*** ELSE FROM CHECK TRAP ****" +" obj_id= " + obj_id + " thread id = "+thread_id + " op_id "+ op_id );
-       /*                 	threadId = 0;
-                        	opId = 0;
-                        	for (Map.Entry<Long, Integer> threadOpIdPairEntry : globalMapEntry.getValue().entrySet()) {
-                                	threadId = threadOpIdPairEntry.getKey();
-                                	opId = threadOpIdPairEntry.getValue();
-                        	}*/
-			//System.out.println("***FROM ELSE **** threadId = "+ threadId + "thread_id = "+ thread_id + " objId= "+objId+ " obj_id = " +obj_id + " opId = "+ opId + " op_id =     " +op_id);
+				System.out.println("*** ELSE ****" +" obj_id= " + obj_id + " "+ objId + " thread id = "+thread_id + " op_id "+ op_id );
                			if( objId == obj_id && threadId != thread_id){
+					System.out.println("ENTRY==");
 					if(opId == 1 || op_id ==1){
-//		        		System.out.println("***FROM PRINT **** thread_id = "+ thread_id + " obj_id = " +obj_id + " op_id = " +op_id);
 						System.out.println("======>Lock is needed" );
+						violation=true;
 					}
 					else {
 						System.out.println("======> Global Table will be updated " );
-						threadOpIdPair = new ThreadAndOp(thread_id, op_id);
-			                        globalMap.put(obj_id, threadOpIdPair);
-
-						//threadOpIdPair.put(thread_id,  op_id);
-			                        //globalMap.put(obj_id, threadOpIdPair);
 					}
 				}
-				/*else {
-                                                System.out.println("======> Global Table will be updated " );
-		//				threadOpIdPair.put(thread_id, op_id);
-			                      //  globalMap.put(obj_id, threadOpIdPair);
-						threadOpIdPair = new ThreadAndOp(thread_id, op_id);
-                                                globalMap.put(obj_id, threadOpIdPair);
-
-                                }*/
                 	}
 		}
-
+		return violation;
 	}
 	/*private static void  printHashMap(){
 		long th_id;
@@ -183,7 +155,7 @@ System.out.println("*** ELSE FROM CHECK TRAP ****" +" obj_id= " + obj_id + " thr
 			System.out.println("***FROM PRINT **** thread_id = "+ thread_id + " obj_id = " +obj_id + " op_id = " +op_id);
 		}
 	}*/
-	public static boolean should_delay(int op_id){
+	public static boolean should_delay(Op op_id){
 		return true;
 	}
 
