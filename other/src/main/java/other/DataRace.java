@@ -12,7 +12,6 @@ public  class DataRace{
 //	 	countries.add("ABC 122");
 //		Collections.sort(countries);
 		System.out.println("Hello ");
-
 		Thread t1 = new Thread()
 		{
 			public void run(){
@@ -45,20 +44,24 @@ public  class DataRace{
 
 	static void Request1(){
 		System.out.println("Request1 Start");
-		list.add("Request 1");
-//		Collections.sort(list);
-		System.out.println("Request1 End");
+		for(int i=0;i<5;i++){
+			list.add("Request 1");
+	//		Collections.sort(list);
+			System.out.println("Request1 End");
 		
-		list.contains("Request1 Start");
+			list.contains("Request1 Start");
+		}
 	}
 
 
 	static void Request2(){
 		System.out.println("Request2 Start");
-		list.add("Request 2");
-//		java.util.Collections.sort(list);
-//		Collections.sort(list);			
-		System.out.println("Request2 End");
+		
+		for(int i=0;i<5;i++){
+			list.add("Request 2");
+	//		Collections.sort(list);			
+			System.out.println("Request2 End");
+		}
 	}
 
 }
