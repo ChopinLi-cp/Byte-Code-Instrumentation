@@ -62,7 +62,7 @@ public class ClassTracer extends ClassVisitor {
 			super.visitLdcInsn(lineNumber);
 			super.visitLdcInsn(name);
 			super.visitLdcInsn(cn);
-			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Utility", name+"Proxy", "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;Ljava/lang/String;)Z", false);
+			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Proxy", name, "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;Ljava/lang/String;)Z", false);
 		}
 		/*else if(combined_name.equals("java/util/ArrayList/contains(Ljava/lang/Object;)Z")){
 		//	System.out.println("ELSE =====>");

@@ -27,7 +27,35 @@ public class Agent {
                 return null;
             }
         });
+	printStartStopTimes();	
     }
+
+
+  /*  Runtime.getRuntime().addShutdownHook(new Thread()
+    {
+      public void run()
+      {
+        System.out.println("Shutdown Hook is running !");
+      }
+    });
+    System.out.println("Application Terminating ...");
+
+*/
+
+	private static void printStartStopTimes() {
+       		final long start = System.currentTimeMillis();
+
+   		//System.err.println("Start at .............................&&&& ");
+        	Thread hook = new Thread() {
+            		@Override
+            		public void run() {
+                		long timePassed = System.currentTimeMillis() - start;
+                		System.err.println("Stop at ............................. " );
+				System.out.println("gggggggggggg " + Utility.resultInterception);
+           		 }
+		};
+        	Runtime.getRuntime().addShutdownHook(hook);
+	}
 
 }
 

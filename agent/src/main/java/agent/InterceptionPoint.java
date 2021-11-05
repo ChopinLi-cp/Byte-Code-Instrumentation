@@ -12,6 +12,7 @@ public class InterceptionPoint{
 	int localHitCount;
 	int globalHitCount;
 	int delayCredit;
+	int objId;
 	/*public InterceptionPoint(long threadId, int opId, String location, long time){
 		this.threadId=threadId;
 		this.opId=opId;
@@ -19,15 +20,24 @@ public class InterceptionPoint{
 		this.time = time;
 	}*/
 
-	public void setClusterInfo(long threadId, String className, String methodName, int lineNumber, int opId, long  opTime){
+	public InterceptionPoint(int objId, long threadId, String className, String methodName, int lineNumber, int opId, long  opTime){
 		this.threadId = threadId;
                 this.className = className;
                 this.lineNumber = lineNumber;
                 this.methodName = methodName;
                 this.opId = opId;
 	        this.opTime = opTime;
-
+		this.objId = objId;
 	}
+
+
+	public void setObjectId(int objId){
+                this.objId = objId;
+        }
+        public int getObjectId(){
+                return this.objId;
+        }
+
 
 	public void setThreadId(long threadId){
 		this.threadId = threadId;
@@ -114,7 +124,7 @@ public class InterceptionPoint{
 	}
 
 	
-	public String ToString(){
+	public String toString(){
             return this.className + "|" + this.methodName + "|" + this.lineNumber + "|" + this.globalHitCount+ "|"+ this.localHitCount;
         }
 
