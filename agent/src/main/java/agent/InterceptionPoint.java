@@ -13,6 +13,8 @@ public class InterceptionPoint{
 	int globalHitCount;
 	int delayCredit;
 	int objId;
+	boolean trapped;
+
 	/*public InterceptionPoint(long threadId, int opId, String location, long time){
 		this.threadId=threadId;
 		this.opId=opId;
@@ -123,7 +125,13 @@ public class InterceptionPoint{
 		return this.delayCredit;
 	}
 
-	
+	public void setTrapped(boolean trapped){
+		this.trapped = trapped;
+	}
+	public boolean getTrapped(){
+		return this.trapped;
+	}
+
 	public String toString(){
             return this.className + "|" + this.methodName + "|" + this.lineNumber + "|" + this.globalHitCount+ "|"+ this.localHitCount;
         }

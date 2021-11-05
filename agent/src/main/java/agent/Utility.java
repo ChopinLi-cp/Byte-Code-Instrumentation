@@ -18,55 +18,16 @@ public class Utility{
 	private static List<String> dangerousTPPairs = new ArrayList<String>();
 	private static HashMap<String, Integer> hitTime = new HashMap<String, Integer>();
 	private static List<String> blacklist = new ArrayList<String>();
-	private static HashMap<Integer, InterceptionPoint> perThreadBlockedTP = new HashMap<>();
-	public static List<InterceptionPoint> resultInterception = new ArrayList<>();
+	private static HashMap<Long, InterceptionPoint> perThreadBlockedTP = new HashMap<>();
+	public static  Map<InterceptionPoint, InterceptionPoint> resultInterception = new HashMap<>();
 	private static HashMap<Long, InterceptionPoint> perThreadLastTP = new HashMap<>();
 	private static LinkedList<InterceptionPoint> globalTPHistory = new LinkedList<>();
 	private static int historyWindowSize = 32;
 	private static HashMap<Long, Integer> perThreadTPCount = new HashMap<>();
-
+	private static int inferSize = 5;
 	private static boolean isTrapActive;
-
-/*	public static boolean addProxy(List list, Object obj, int lineNumber, String methodName,  String className){
-
-		long opTime = System.currentTimeMillis();
-		System.out.println("Line Number " +lineNumber+ "method name = " + methodName+ " className " + className);
-		int hashcode = System.identityHashCode(list);
-
-		Thread currentThread = Thread.currentThread();
-		long currentThreadId = currentThread.getId();
-		
-		System.out.println("ADD CurrentThreadId = "+currentThreadId);
-		
-		//long opTime = System.currentTimeMillis();
-		//System.out.println("Time = " +time1);
-                boolean ret = list.add(obj);
-	
-	//	Op opAdd = new Op(1, methodName, className, lineNumber, opTime );
-		
-	        InterceptionPoint interception = new InterceptionPoint(currentThreadId, className, methodName, lineNumber, 0, opTime); 
-		OnCall(hashcode, interception);
-		
-		return ret;
-	}
-
-	public static boolean containsProxy(List list, Object obj, int lineNumber, String methodName, String className){
-
-		long opTime = System.currentTimeMillis();
-		int hashcode = System.identityHashCode(list);
-
-		Thread currentThread = Thread.currentThread();
-		long currentThreadId = currentThread.getId();
-	
-		//System.out.println("Time From containsProxy = " +opTime);
-		boolean ret= list.contains(obj);	
-
-               // Op opContains = new Op(2, methodName,  className, lineNumber, opTime);
-	        InterceptionPoint interception = new InterceptionPoint(currentThreadId, className, methodName, lineNumber, 1, opTime); 
-		OnCall(hashcode, interception);
-		
-                return ret;
-	} */
+	private static int delayPerDangerousInterceptionPoint = 100;
+	private static double inferLimit = 0.5;
 
 	public static void delay(){
 		try{
@@ -95,8 +56,41 @@ public class Utility{
 		int obj_id = interception.getObjectId();
 		LinkedList<InterceptionPoint> threadOpList;
 		if(globalTrapList.containsKey(obj_id)){
+		/* try{
+                         Thread.sleep(100);
+                 }
+                 catch (InterruptedException e) {
+                          System.out.println("Exception " );
+                         e.printStackTrace();
+                  }*/
+
+		globalTrapList.remove(obj_id);
+		interception.setDelayCredit(inferSize);
+
+	//	int size = perThreadLastTP.size();
+		int index = 0;  
+		for (Map.Entry<Long, InterceptionPoint> x : perThreadLastTP.entrySet())
+		{
+			Long threadId = x.getKey();
+			InterceptionPoint tp1 =  x.getValue();
+			if ((interception.getTimeMillis() + ( delayPerDangerousInterceptionPoint * inferLimit)) > tp1.getTimeMillis())
+                            {
+                                perThreadBlockedTP.put(threadId, interception);
+				System.out.println("CLEAR TRAP +++++++++++++++++++++++&&&&&&&");
+                            }
+			index ++;
+		}
+		interception.setTrapped (true);
+
+		//perThreadLastTP.forEach((k,v)->System.out.println("Key: " + k + "Value:@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ " + v));
+		/* for (Map.Entry<Long, InterceptionPoint> pair: perThreadLastTP.entrySet()) {
+			 System.out.format("key: %s, value: %d%n jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj", pair.getKey(), pair.getValue());
+        	}*/
+
+
+
 		//I will remove the key with thw obj_id	
-			List<InterceptionPoint> thOpList = globalTrapList.get(obj_id);
+			/*List<InterceptionPoint> thOpList = globalTrapList.get(obj_id);
 
 			for (int i =0; i<thOpList.size();i++){
 				InterceptionPoint thOpEntity=thOpList.get(i);
@@ -107,8 +101,8 @@ public class Utility{
 				//	HashSet<string> dangerousTPPairs = new HashSet<string>();			
 					System.out.println("***CLeared ****" +" obj_id= " + obj_id + " " + " thread id = "+threadId + " op_id "+ opId );
 			//		printHashMap();
-				}*/
-			}
+				}
+			}*/
 			isTrapActive = false;
 		}	
 	}
@@ -117,14 +111,15 @@ public class Utility{
 		
 		System.out.println("Entry FindRacingTP");
 		int obj_id = interception.getObjectId();
-	     if(lastInterceptionPointForOBJ.containsKey(obj_id)){
+	        if(lastInterceptionPointForOBJ.containsKey(obj_id)){
 
-		System.out.println("Within 1st IF FindRacingTP");
+		        System.out.println("Within 1st IF FindRacingTP");
 			LinkedList<InterceptionPoint> qList = lastInterceptionPointForOBJ.get(obj_id);
 
 			int listSize = qList.size();
-			for (int i =0; i<listSize;i++){
-				InterceptionPoint thOpEntity=qList.get(i);
+			//for (int i =0; i<listSize;i++)
+			for (InterceptionPoint thOpEntity: qList){
+			//	InterceptionPoint thOpEntity=qList.get(i);
 				long threadId= thOpEntity.getThreadId();
 				int opId= thOpEntity.getOpId();
 				if((threadId != interception.getThreadId()) && (opId == 0 || interception.getOpId() == 0)) {
@@ -152,8 +147,9 @@ public class Utility{
 		}
 
 		//update Dangerous Pair List
-		for(int i= 0; i<list.size();i++){
-			InterceptionPoint tp2=list.get(i);
+		//for(int i= 0; i<list.size();i++)
+		for (InterceptionPoint tp2: list){
+			//InterceptionPoint tp2=list.get(i);
 			String st = interception.toString() + " ! " + tp2.toString();
 			String st2 = tp2.toString() + " ! " + interception.toString();
 			String shortst = GetPairID(st, st2);
@@ -171,11 +167,6 @@ public class Utility{
 		}
 
 	}	
-
-	private void LoadKnownBuggyInterceptionPoints(String file)
-        {
-
-	}
 
 	private static  synchronized  String GetPairID(String s1, String s2)
         {
@@ -210,24 +201,6 @@ public class Utility{
 		interception.setActiveThdNum(perThreadTPCount.size());
 	}
 
-/*	public static  synchronized  void OnCall(int obj_id, InterceptionPoint interception){
-		isTrapActive = false;
-		UpdateTPHistory(obj_id, interception);
-		System.out.println("After UpdateTPHistory");
-		FindRacingTP (obj_id, interception);
-		System.out.println("After FindRacingTP");
-		RemoveDependentInterceptionPoints(interception);
-		System.out.println("After RemoveDependentInterception");
-		boolean  bugFound = check_for_trap (obj_id , interception);
-		//int op_id= operation.getOpID();
-		if( !bugFound &&  should_delay(obj_id, interception))
-		{
-			set_trap(obj_id, interception);
-			delay();
-			clear_trap(obj_id, interception);
-			//printHashMap();
-		}
-	}*/
 	public static synchronized  boolean checkForTrap(InterceptionPoint interception){
 		boolean bugFound =false;
 		if(globalTrapList.isEmpty())	{
@@ -241,15 +214,16 @@ public class Utility{
                 	int objId, opId;
 			if(globalTrapList.containsKey(obj_id)){	
 				LinkedList<InterceptionPoint> interceptionPointList = globalTrapList.get(obj_id);
-				for (int i =0; i<interceptionPointList.size();i++){
-					InterceptionPoint interception2=interceptionPointList.get(i);
+			//	for (int i =0; i<interceptionPointList.size();i++){
+				for (InterceptionPoint interception2: interceptionPointList){
+				//	InterceptionPoint interception2=interceptionPointList.get(i);
 					threadId= interception2.getThreadId();
 					opId= interception2.getOpId();
 					System.out.println(" obj_id= " + obj_id + " " + " thread id = "+thread_id + " op_id "+ op_id );
                				if((threadId != thread_id) && (opId == 0 || op_id == 0)) {
 						System.out.println("======>Lock is needed" );
 						bugFound = true;
-						resultInterception.add(interception);
+						resultInterception.put(interception, interception2);
 					}
 					else {
 						System.out.println("======> Global Table will be updated " );
@@ -268,8 +242,9 @@ public class Utility{
 		 for (Map.Entry<Integer, LinkedList <InterceptionPoint>> globalTrapListEntry : globalTrapList.entrySet()) {
                  	obj_id = globalTrapListEntry.getKey();
                         List<InterceptionPoint>  thOpList = globalTrapList.get(obj_id);
-                        for (int i =0; i<thOpList.size();i++){
-                        	InterceptionPoint thOpEntity=thOpList.get(i);
+                       // for (int i =0; i<thOpList.size();i++){
+			for ( InterceptionPoint thOpEntity: thOpList){
+                        	//InterceptionPoint thOpEntity=thOpList.get(i);
                                 th_id= thOpEntity.getThreadId();
                                 op_id= thOpEntity.getOpId();
                                 System.out.println("Print** obj_id= " + obj_id + " thread id = "+th_id + " op_id "+ op_id );
@@ -319,11 +294,12 @@ public class Utility{
 		int sleepDuration = 0;
 		int danger = -1;
 		int objId = interception.getObjectId();
-		System.out.println("==================***Danger Initial = " +danger);
+		//System.out.println("==================***Danger Initial = " +danger);
 		if(globalTrapList.containsKey(objId)){
 			LinkedList<InterceptionPoint> thOpList = globalTrapList.get(objId);
-			for (int i=0; i<thOpList.size(); i++){
-				InterceptionPoint thOpEntity = thOpList.get(i);
+		//	for (int i=0; i<thOpList.size(); i++){
+			for( InterceptionPoint thOpEntity: thOpList){
+			//	InterceptionPoint thOpEntity = thOpList.get(i);
 				String location = thOpEntity.getLocation();
 				danger = IsInsideDangerList(location);
 				System.out.println("==================***Danger = " +danger);
@@ -361,13 +337,15 @@ public class Utility{
 
 	private static  synchronized  void removeDependentInterceptionPoints(InterceptionPoint tp)
         {
-           // lock (this.perThreadLastTP)
-            {
+
+
+		//System.out.println("Within RemoveDependentInterception +++++++++++++++++++++++&&&&&&&");
                 if (perThreadBlockedTP.containsKey(tp.getThreadId()))
                 {
                     // find the torchpint that blocked this thread if exists.
                     InterceptionPoint tp2 = perThreadBlockedTP.get(tp.getThreadId());
 
+		System.out.println("Within RemoveDependentInterception +++++++++++++++++++++++");
                     // delaycredit is k means a InterceptionPoint block the next-k operation in other thread
 		    int valDelayCredit = tp2.getDelayCredit();
                     if ( valDelayCredit > 0)
@@ -383,45 +361,37 @@ public class Utility{
                         perThreadBlockedTP.remove(tp.getThreadId());
                     }
                 }
-            }
         }
 
 	private static  synchronized  void RemoveDangerItem(String tpstr1, String tpstr2)
         {
             String st = GetPairID(tpstr1, tpstr2);
             dangerousTPPairs.remove(st);
-
         }
 
-	private static int IsInsideDangerList(String tpstr)
+	private static  synchronized int IsInsideDangerList(String tpstr)
         {
-           // lock (dangerousTPPairs)
-	   synchronized(Utility.class)
-            {
                 if (hitTime.containsKey(tpstr))
                 {
                     int count = hitTime.get(tpstr) + 1;
 		    hitTime.put(tpstr, count);
 		    return count;
                 }
-            }
 
             return -1;
         }
 
-
-
-	public static  synchronized  void onCall(InterceptionPoint interception){
+	public static  void onCall(InterceptionPoint interception){
 		isTrapActive = false;
 		updateTPHistory(interception);
 		System.out.println("After UpdateTPHistory");
 		findRacingTP (interception);
 		System.out.println("After FindRacingTP");
 		removeDependentInterceptionPoints(interception);
-		System.out.println("After RemoveDependentInterception");
+//		System.out.println("After RemoveDependentInterception");
 		boolean  bugFound = checkForTrap (interception);
 		//int op_id= operation.getOpID();
-		if( !bugFound &&  shouldDelay(interception))
+		if(!bugFound && shouldDelay(interception))
 		{
 			setTrap(interception);
 			delay();
@@ -429,6 +399,4 @@ public class Utility{
 			//printHashMap();
 		}
 	}
-
-
 }
