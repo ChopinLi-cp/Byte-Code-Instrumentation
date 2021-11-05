@@ -1,6 +1,11 @@
 package agent;
 
 public class Op{
+
+	enum Operation { WRITE, READ }
+
+
+
 /*	int operation;
 	String className;
 	String methodName;

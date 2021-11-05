@@ -1,10 +1,10 @@
 package agent;
 
-public enum EnumSet{
-ADD(1),CONTAINS(2);
+public enum OPERATION{
+WRITE(0), READ(1);
 private int value;
 
-    EnumSet(int value) {
+    OPERATION(int value) {
         this.value = value;
     }
 
