@@ -225,12 +225,10 @@ public class PomFile {
 
     public static void main(String[] args) {
         if (args.length != 3) {
-            System.out.println("Usage: java PomFile <artifact_id> <artifact_version> <configuration_class_name>");
+            System.out.println("Usage: java PomFile <ARG_LINE>");
         }
 
-        ARTIFACT_ID = args[0];
-        ARTIFACT_VERSION = args[1];
-        CONFIGURATION_CLASS  = args[2];
+        ARG_LINE = args[0];
 
         InputStreamReader isReader = new InputStreamReader(System.in);
         BufferedReader bufReader = new BufferedReader(isReader);
