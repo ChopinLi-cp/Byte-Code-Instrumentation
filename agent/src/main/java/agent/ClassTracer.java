@@ -10,6 +10,9 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Label;
 import java.util.*;
 import java.io.*;
+import java.net.URL;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 public class ClassTracer extends ClassVisitor {
     private String cn;
@@ -17,9 +20,9 @@ public class ClassTracer extends ClassVisitor {
 
    static BufferedReader reader;
    static List<String> listAPI;
-//   List<String> methodList = new ArrayList<>(Arrays.asList("java/util/ArrayList/add(Ljava/lang/Object;)Z", "java/util/ArrayList/contains(Ljava/lang/Object;)Z"));
+    // List<String> methodList = new ArrayList<>(Arrays.asList("java/util/ArrayList/add(Ljava/lang/Object;)Z", "java/util/ArrayList/contains(Ljava/lang/Object;)Z"));
     public ClassTracer(ClassVisitor cv) {
-/*	BufferedReader reader;
+    /*	BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader("API.txt"));
 			String line = reader.readLine();
@@ -45,24 +48,37 @@ public class ClassTracer extends ClassVisitor {
 
     public static void loadFile(){
 	    try {
-		    	listAPI = new ArrayList<String>();
-                        reader = new BufferedReader(new FileReader("agent/src/main/java/agent/API.txt"));
-                        String line = reader.readLine();
-                        while (line != null) {
-                                System.out.println(line);
-                                // read next line
-                                line = reader.readLine();
-				listAPI.add(line);
-                        }
-                        reader.close();
-                } catch (IOException e) {
-                        e.printStackTrace();
+            listAPI = new ArrayList<String>();
+            // get the file url, not working in JAR file.
+            ClassLoader classloader = ClassTracer.class.getClassLoader();
+            // URL resource = ClassTracer.class.getClassLoader().getResource("API.txt");
+            InputStream is = classloader.getResourceAsStream("API.txt");
+            // System.out.println("URL: " + resource);
+            if (is == null) {
+                System.out.println("file not found");
+            } else {
+                // failed if files have whitespaces or special characters
+                //return new File(resource.getFile());
+                InputStreamReader streamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
+
+                reader = new BufferedReader(streamReader);
+                String line = reader.readLine();
+                while (line != null) {
+                    System.out.println(line);
+                    // read next line
+                    line = reader.readLine();
+                    listAPI.add(line);
                 }
+                reader.close();
+            }
+	    } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
     static {
- 	loadFile();
+ 	    loadFile();
     }
 
     @Override
