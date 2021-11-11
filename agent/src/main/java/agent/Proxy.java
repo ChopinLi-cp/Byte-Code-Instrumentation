@@ -11,24 +11,7 @@ public class Proxy{
 		util = new Utility();
 	}
  	public static boolean add(List list, Object obj, int lineNumber, String methodName,  String className){
-
-                //long opTime = System.currentTimeMillis();
-               // System.out.println("Line Number " +lineNumber+ "method name = " + methodName+ " className " + className);
-               // int hashcode = System.identityHashCode(list);
-
-                //Thread currentThread = Thread.currentThread();
-                //long currentThreadId = currentThread.getId();
-    
-               // System.out.println("ADD CurrentThreadId = "+currentThreadId);
-                    
-                //long opTime = System.currentTimeMillis();
-                //System.out.println("Time = " +time1);
-                //boolean ret = list.add(obj);
-            
-        //      Op opAdd = new Op(1, methodName, className, lineNumber, opTime );
-                    
-//                InterceptionPoint interception = new InterceptionPoint(currentThreadId, className, methodName, lineNumber, 0, opTime); 
-		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, 0);
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.WRITE);
                 util.onCall(interception);
 
                 boolean ret = list.add(obj);
@@ -37,21 +20,7 @@ public class Proxy{
         }
 
 	public static boolean contains(List list, Object obj, int lineNumber, String methodName, String className){
-
-                //long opTime = System.currentTimeMillis();
-                //int hashcode = System.identityHashCode(list);
-
-               // Thread currentThread = Thread.currentThread();
-               // long currentThreadId = currentThread.getId();
-
-                //System.out.println("Time From containsProxy = " +opTime);
-                //boolean ret= list.contains(obj);
-
-               // Op opContains = new Op(2, methodName,  className, lineNumber, opTime);
-                //InterceptionPoint interception = new InterceptionPoint(currentThreadId, className, methodName, lineNumber, 1, opTime);
-
-
-		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, 1);
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.READ);
 		//InterceptionPoint interception = Helper.createInstance(currentThreadId, className, methodName, lineNumber, 0, opTime);
                 util.onCall(interception);
 
@@ -59,6 +28,76 @@ public class Proxy{
                 return ret;
         }
 
-		
+
+	public static int size(List list,  int lineNumber, String methodName, String className){
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.READ);
+                util.onCall(interception);
+                int ret= list.size();
+                return ret;
+        }
+
+ 	 public static boolean  isEmpty(List list,  int lineNumber, String methodName, String className){
+                InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.READ);
+                util.onCall(interception);
+                boolean ret= list.isEmpty();
+                return ret;
+        }
+
+
+ 	public static boolean remove(List list, Object obj, int lineNumber, String methodName,  String className){
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.WRITE);
+                util.onCall(interception);
+		System.out.println("ISSSSSSSSSSSSSSSSSSSSSSSSSS REMOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+                boolean ret = list.remove(obj);
+                return ret;
+        }
+
+
+
+
+
+	public static boolean add(ArrayList list, Object obj, int lineNumber, String methodName,  String className){
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.WRITE);
+                util.onCall(interception);
+
+                boolean ret = list.add(obj);
+                    
+                return ret;
+        }
+
+	public static boolean contains(ArrayList list, Object obj, int lineNumber, String methodName, String className){
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.READ);
+		//InterceptionPoint interception = Helper.createInstance(currentThreadId, className, methodName, lineNumber, 0, opTime);
+                util.onCall(interception);
+
+                boolean ret= list.contains(obj);
+                return ret;
+        }
+
+
+	public static int size(ArrayList list,  int lineNumber, String methodName, String className){
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.READ);
+                util.onCall(interception);
+                int ret= list.size();
+                return ret;
+        }
+
+ 	 public static boolean isEmpty(ArrayList list,  int lineNumber, String methodName, String className){
+                InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.READ);
+                util.onCall(interception);
+                boolean ret= list.isEmpty();
+                return ret;
+        }
+
+
+ 	public static boolean remove(ArrayList list, Object obj, int lineNumber, String methodName,  String className){
+		InterceptionPoint interception = Helper.createInstance(list, className, methodName, lineNumber, Operation.WRITE);
+                util.onCall(interception);
+		System.out.println("ArrayLIST ISSSSSSSSSSSSSSSSSSSSSSSSSS REMOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+                boolean ret = list.remove(obj);
+                return ret;
+        }
+
+
 
 }

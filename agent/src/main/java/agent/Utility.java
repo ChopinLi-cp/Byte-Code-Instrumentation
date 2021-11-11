@@ -122,7 +122,7 @@ public class Utility{
 			//	InterceptionPoint thOpEntity=qList.get(i);
 				long threadId= thOpEntity.getThreadId();
 				int opId= thOpEntity.getOpId();
-				if((threadId != interception.getThreadId()) && (opId == 0 || interception.getOpId() == 0)) {
+				if((threadId != interception.getThreadId()) && (opId == Operation.WRITE || interception.getOpId() == Operation.WRITE)) {
 					long existingTime = thOpEntity.getTimeMillis();
 					if ((existingTime + planDistance) >  interception.getTimeMillis()){
 						if ((thOpEntity.getActiveThdNum() > 1) || (interception.getActiveThdNum() > 1)){
@@ -220,7 +220,7 @@ public class Utility{
 					threadId= interception2.getThreadId();
 					opId= interception2.getOpId();
 					System.out.println(" obj_id= " + obj_id + " " + " thread id = "+thread_id + " op_id "+ op_id );
-               				if((threadId != thread_id) && (opId == 0 || op_id == 0)) {
+               				if((threadId != thread_id) && (opId == Operation.WRITE || op_id == Operation.WRITE)) {
 						System.out.println("======>Lock is needed" );
 						bugFound = true;
 						resultInterception.put(interception, interception2);
@@ -308,7 +308,7 @@ public class Utility{
 
 
 				
-		if ((danger >= 0 || !isTrapActive ) && (interception.getOpId()==0))
+		if ((danger >= 0 || !isTrapActive ) && (interception.getOpId()==Operation.WRITE))
                     {
                        /* if(trapPlan != null) {
 				prob = trapPlan.delayProbability;

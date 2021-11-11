@@ -17,22 +17,7 @@ public class ClassTracer extends ClassVisitor {
 
    static BufferedReader reader;
    static List<String> listAPI;
-//   List<String> methodList = new ArrayList<>(Arrays.asList("java/util/ArrayList/add(Ljava/lang/Object;)Z", "java/util/ArrayList/contains(Ljava/lang/Object;)Z"));
-    public ClassTracer(ClassVisitor cv) {
-/*	BufferedReader reader;
-		try {
-			reader = new BufferedReader(new FileReader("API.txt"));
-			String line = reader.readLine();
-			while (line != null) {
-				System.out.println(line);
-				// read next line
-				line = reader.readLine();
-			}
-			reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-
+   public ClassTracer(ClassVisitor cv) {
         super(Opcodes.ASM9, cv);
 
     }
@@ -79,14 +64,17 @@ public class ClassTracer extends ClassVisitor {
 
 	    @Override
 	    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {	
-			//System.out.println("Owner = " +name);
-		String combined_name = owner +"/" +name+desc;	
+		String combined_name = owner +"/" +name+desc;
 		if(listAPI.contains(combined_name)){
-				
+			String methodParameter = combined_name.substring(combined_name.indexOf("(")+1,combined_name.indexOf(")"));
+			String  returnVal = combined_name.substring(combined_name.lastIndexOf(")") + 1);
 			super.visitLdcInsn(lineNumber);
 			super.visitLdcInsn(name);
 			super.visitLdcInsn(cn);
-			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Proxy", name, "(Ljava/util/List;Ljava/lang/Object;ILjava/lang/String;Ljava/lang/String;)Z", false);
+			//System.out.println("Combined Name %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% " +owner +" " + name) ;	
+			String proxyMethodSignature = "(L" + owner + ";"  +methodParameter+ "ILjava/lang/String;Ljava/lang/String;)" + returnVal;
+			System.out.println("..............." + proxyMethodSignature); 
+			super.visitMethodInsn(Opcodes.INVOKESTATIC, "agent/Proxy", name, proxyMethodSignature, false);
 		}
 		else {
 			super.visitMethodInsn(opcode, owner, name, desc, itf);
