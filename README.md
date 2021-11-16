@@ -21,3 +21,8 @@ Run the following command to automatically setup the pom.xml for our agent part.
 ```shell
 bash scripts/agent-pom-modify/modify-project.sh path_to_maven_project
 ```
+
+For example, 
+```shell
+bash scripts/agent-pom-modify/modify-project.sh other/
+```
