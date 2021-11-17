@@ -18,11 +18,11 @@ bash scripts/agent-pom-modify/modify-project.sh path_to_maven_project
 
 For example, 
 ```shell
-bash scripts/agent-pom-modify/modify-project.sh dataset/spring-boot-demo/
+bash scripts/agent-pom-modify/modify-project.sh dataset/dataRace/
 ```
 ## Quickstart
 There is a ready project named other in our respository. By using the following shell script, you can quickly get the results of other project.
 
 ```shell
-bash scripts/runAll.sh dataset/spring-boot-demo
+bash scripts/runAll.sh dataset/dataRace
 ```
