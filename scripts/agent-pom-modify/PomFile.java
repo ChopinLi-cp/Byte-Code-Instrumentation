@@ -34,7 +34,7 @@ public class PomFile {
     private String srcDir;
     private String testDir;
     private String outputDir;
-    private static String ARG_LINE = "idflakies";
+    private static String ARG_LINE;
 
     public PomFile(String pom) {
         this.pom = pom;
@@ -208,6 +208,11 @@ public class PomFile {
             }
             {
                 Node configuration = doc.createElement("configuration");
+                {
+                    Node className0 = doc.createElement("skip");
+                    className0.setTextContent("false");
+                    configuration.appendChild(className0);
+                }
                 {
                     Node className = doc.createElement("argLine");
                     className.setTextContent(ARG_LINE);
